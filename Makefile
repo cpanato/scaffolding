@@ -29,7 +29,7 @@ sign-test-images:
 	GIT_HASH=$(GIT_HASH) GIT_VERSION=$(GIT_TAG) ARTIFACT=testimagerefs ./scripts/sign-release-images.sh
 
 .PHONY: sign-release-images
-sign-release-images: sign-test-images
+sign-release-images:
 	$(foreach artifact,$(artifacts), \
 		export GIT_HASH=$(GIT_HASH) GIT_VERSION=$(GIT_TAG) ARTIFACT=imagerefs-$(artifact) && ./scripts/sign-release-images.sh \
 	)
