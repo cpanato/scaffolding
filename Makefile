@@ -6,7 +6,8 @@ LDFLAGS=-buildid= -X sigs.k8s.io/release-utils/version.gitVersion=$(GIT_TAG)
 KO_DOCKER_REPO ?= ghcr.io/cpanato/scaffolding
 
 # These are the subdirs under config that we'll turn into separate artifacts.
-artifacts := trillian ctlog fulcio rekor tuf prober
+# artifacts := trillian ctlog fulcio rekor tuf prober
+artifacts := prober
 
 .PHONY: ko-resolve
 ko-resolve:
