@@ -14,7 +14,7 @@ ko-resolve:
 	# "Doing ko resolve for config"
 	$(foreach artifact, $(artifacts), $(shell export LDFLAGS="$(LDFLAGS)" KO_DOCKER_REPO=$(KO_DOCKER_REPO); \
 	ko resolve --tags $(GIT_TAG),latest -BRf ./config/$(artifact) \
-	--platform=--platform=linux/amd64,linux/arm64 \
+	--platform=linux/amd64,linux/arm64 \
 	--image-refs imagerefs-$(artifact) > release-$(artifact).yaml )) \
 
 .PHONY: ko-resolve-testdata
