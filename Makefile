@@ -3,7 +3,7 @@ GIT_HASH ?= $(shell git rev-parse HEAD)
 
 LDFLAGS=-buildid= -X sigs.k8s.io/release-utils/version.gitVersion=$(GIT_TAG)
 
-KO_DOCKER_REPO ?= ghcr.io/sigstore/scaffolding
+KO_DOCKER_REPO ?= ghcr.io/cpanato/scaffolding
 
 # These are the subdirs under config that we'll turn into separate artifacts.
 artifacts := trillian ctlog fulcio rekor tuf prober
