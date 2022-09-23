@@ -14,7 +14,7 @@ ko-resolve:
 	# "Doing ko resolve for config"
 	$(foreach artifact, $(artifacts), $(shell export LDFLAGS="$(LDFLAGS)" KO_DOCKER_REPO=$(KO_DOCKER_REPO); \
 	ko resolve --tags $(GIT_TAG),latest -BRf ./config/$(artifact) \
-	--platform=linux/amd64,linux/arm64 \
+	--platform=all \
 	--image-refs imagerefs-$(artifact) > release-$(artifact).yaml )) \
 
 .PHONY: ko-resolve-testdata
@@ -22,7 +22,7 @@ ko-resolve-testdata:
 	# "Doing ko resolve for testdata"
 	# "Build a big bundle of joy, this also produces SBOMs"
 	LDFLAGS="$(LDFLAGS)" KO_DOCKER_REPO=$(KO_DOCKER_REPO) \
-	ko resolve --tags $(GIT_TAG),latest --base-import-paths --recursive --filename ./testdata --platform=linux/amd64,linux/arm64 --image-refs testimagerefs > testrelease.yaml
+	ko resolve --tags $(GIT_TAG),latest --base-import-paths --recursive --filename ./testdata --platform=all --image-refs testimagerefs > testrelease.yaml
 
 .PHONY: sign-test-images
 sign-test-images:
