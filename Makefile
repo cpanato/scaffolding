@@ -6,14 +6,15 @@ LDFLAGS=-buildid= -X sigs.k8s.io/release-utils/version.gitVersion=$(GIT_TAG)
 KO_DOCKER_REPO ?= ghcr.io/cpanato/scaffolding
 
 # These are the subdirs under config that we'll turn into separate artifacts.
-artifacts := trillian ctlog fulcio rekor tuf prober
+# artifacts := trillian ctlog fulcio rekor tuf prober
+artifacts := prober
 
 .PHONY: ko-resolve
 ko-resolve:
 	# "Doing ko resolve for config"
 	$(foreach artifact, $(artifacts), $(shell export LDFLAGS="$(LDFLAGS)" KO_DOCKER_REPO=$(KO_DOCKER_REPO); \
 	ko resolve --tags $(GIT_TAG),latest -BRf ./config/$(artifact) \
-	--platform=all \
+	--platform=--platform=linux/amd64,linux/arm64 \
 	--image-refs imagerefs-$(artifact) > release-$(artifact).yaml )) \
 
 .PHONY: ko-resolve-testdata
@@ -21,7 +22,7 @@ ko-resolve-testdata:
 	# "Doing ko resolve for testdata"
 	# "Build a big bundle of joy, this also produces SBOMs"
 	LDFLAGS="$(LDFLAGS)" KO_DOCKER_REPO=$(KO_DOCKER_REPO) \
-	ko resolve --tags $(GIT_TAG),latest --base-import-paths --recursive --filename ./testdata --platform=all --image-refs testimagerefs > testrelease.yaml
+	ko resolve --tags $(GIT_TAG),latest --base-import-paths --recursive --filename ./testdata --platform=linux/amd64,linux/arm64 --image-refs testimagerefs > testrelease.yaml
 
 .PHONY: sign-test-images
 sign-test-images:
@@ -30,11 +31,11 @@ sign-test-images:
 .PHONY: sign-release-images
 sign-release-images: sign-test-images
 	$(foreach artifact,$(artifacts), \
-		echo "Signing $(artifact)"; export GIT_HASH=$(GIT_HASH) GIT_VERSION=$(GIT_TAG) ARTIFACT=imagerefs-$(artifact); ./scripts/sign-release-images.sh \
+		export GIT_HASH=$(GIT_HASH) GIT_VERSION=$(GIT_TAG) ARTIFACT=imagerefs-$(artifact) && ./scripts/sign-release-images.sh \
 	)
 
 .PHONY: release-images
-release-images: ko-resolve ko-resolve-testdata
+release-images: ko-resolve
 
 ### Testing
 
